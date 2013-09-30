@@ -1,9 +1,27 @@
 require "rulers/version"
+require "rulers/routing"
 
 module Rulers
   class Application 
     def call(env)
-	    [200, {'Content-Type' => "text/html"}, ["<b>Hello from Ruby on Rulers!"]]
+      # TODO fix this hack for routing favicon image
+      if(env["PATH_INFO"] == "/favicon.ico")
+        [404, {'Content-Type' => "text/html"}, []]
+      end
+      klass, act = get_controller_and_action(env)
+      controller = klass.new(env)
+      text = controller.send(act)
+	    [200, {'Content-Type' => "text/html"}, [text]]
+    end
+  end
+
+  class Controller
+    def initialize(env)
+        @env = env
+    end
+
+    def env
+      @env
     end
   end
 end
