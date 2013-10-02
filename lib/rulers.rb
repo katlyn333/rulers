@@ -5,7 +5,14 @@ module Rulers
   class Application 
     def call(env)
       # TODO fix this hack for routing favicon image
-      if(env["PATH_INFO"] == "/favicon.ico")
+      if env["PATH_INFO"] == "/"
+        begin
+          text = File.read(File.join('public', 'index.html'))
+          return [200, {'Content-type' => "text/html"},[text]]
+        rescue Errno::ENOENT
+          return [404, {'Content-type' => "text/html"},["Missing Page or File"]]
+        end
+      elsif env["PATH_INFO"] == "/favicon.ico"
         return [404, {'Content-Type' => "text/html"}, []]
       end
 

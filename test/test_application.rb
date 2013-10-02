@@ -17,6 +17,12 @@ class RulerAppTest < Test::Unit::TestCase
     assert last_response.body =~ %r{500 Server Error}
   end
 
+  def test_request
+    get "/"
+    assert last_response.status == 404
+    assert last_response.body["Missing"]
+  end
+
   def test_missing_favicon
     get "/favicon.ico"
     assert last_response.status == 404
